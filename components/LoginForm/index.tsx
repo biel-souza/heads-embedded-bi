@@ -3,8 +3,11 @@ import { IconButton, InputAdornment } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import logo from "@/images/logo-login.jpeg";
 import { useState } from "react";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
-import { Form, Input, InputContainer, Label, LoginContainer, Logo, Title, Button } from "./style";
+import { Form, LoginContainer, Logo, Title, Button } from "./style";
+import { InputText } from "../InputText";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,38 +22,63 @@ const LoginForm = () => {
     event.preventDefault();
   };
 
+  const validationSchema = Yup.object({
+    user: Yup.string().required("O usuário é obrigatório"),
+    password: Yup.string().min(6, "A senha deve ter pelo menos 6 caracteres").required("A senha é obrigatória"),
+  });
+
   return (
     <LoginContainer>
       <Logo src={logo.src} />
       <Title>INFORME SEUS DADOS</Title>
-      <Form>
-        <InputContainer>
-          <Label>Email:</Label>
-          <Input type="text" name="email" placeholder="Email" />
-        </InputContainer>
-        <InputContainer>
-          <Label>Senha:</Label>
-          <Input
-            id="outlined-adornment-password"
-            type={showPassword ? "text" : "password"}
-            placeholder="Senha"
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label={showPassword ? "hide the password" : "display the password"}
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  onMouseUp={handleMouseUpPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </InputContainer>
-        <Button type="submit">ENTRAR</Button>
-      </Form>
+      <Formik
+        initialValues={{ user: "", password: "" }}
+        validationSchema={validationSchema}
+        onSubmit={(values, { setSubmitting }) => {
+          setTimeout(() => {
+            alert(JSON.stringify(values, null, 2));
+            setSubmitting(false);
+          }, 400);
+        }}
+      >
+        {({ values, errors, handleChange, handleSubmit }) => (
+          <Form onSubmit={handleSubmit}>
+            <InputText
+              type="text"
+              name="user"
+              placeholder="Usuário"
+              error={errors.user}
+              value={values.user}
+              label="Usuário"
+              onChange={handleChange}
+            />
+            <InputText
+              id="outlined-adornment-password"
+              type={showPassword ? "text" : "password"}
+              error={errors.password}
+              name="password"
+              placeholder="Senha"
+              label="Senha"
+              value={values.password}
+              onChange={handleChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={showPassword ? "hide the password" : "display the password"}
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    onMouseUp={handleMouseUpPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            <Button type="submit">ENTRAR</Button>
+          </Form>
+        )}
+      </Formik>
     </LoginContainer>
   );
 };
