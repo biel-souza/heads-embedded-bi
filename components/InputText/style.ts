@@ -8,7 +8,7 @@ export const Input = styled(OutlinedInput)`
   border-radius: 5px;
   font-size: 14px;
   height: 40px;
-  color: rgb(133, 133, 133);
+  color: rgb(80, 80, 80);
   &:focus-within {
     outline: none;
   }

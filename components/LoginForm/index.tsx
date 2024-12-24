@@ -1,12 +1,13 @@
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { IconButton, InputAdornment } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
-import logo from "@/images/logo-login.jpeg";
+import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { Form, LoginContainer, Logo, Title, Button } from "./style";
+import logo from "@/images/logo-login.jpeg";
 import { InputText } from "../InputText";
 
 const LoginForm = () => {
@@ -34,11 +35,8 @@ const LoginForm = () => {
       <Formik
         initialValues={{ user: "", password: "" }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 400);
+        onSubmit={(values) => {
+          signIn("credentials", values);
         }}
       >
         {({ values, errors, handleChange, handleSubmit }) => (

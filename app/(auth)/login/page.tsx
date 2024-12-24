@@ -1,4 +1,5 @@
 "use client";
+
 import "@/styles/login.css";
 
 import LoginForm from "@/components/LoginForm";
