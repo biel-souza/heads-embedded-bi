@@ -1,11 +1,21 @@
 import Credentials from "next-auth/providers/credentials";
-import NextAuth, { User } from "next-auth";
+import NextAuth from "next-auth";
 
 declare module "next-auth" {
   interface Session {
     user: User & {
+      name?: string;
       user?: string;
+      type?: string; // Adicionei o `type` aqui
     };
+  }
+
+  interface JWT {
+    type?: string; // Adicionei o `type` ao token JWT
+  }
+
+  interface User {
+    type?: string; // Adicione a propriedade `type` ao User
   }
 }
 
@@ -14,7 +24,7 @@ const handler = NextAuth({
     strategy: "jwt",
   },
   pages: {
-    signIn: "/auth/login",
+    signIn: "/login",
   },
   providers: [
     Credentials({
@@ -28,6 +38,7 @@ const handler = NextAuth({
         },
       },
       async authorize(credentials) {
+        console.log("authorize");
         console.log(credentials);
         const user = credentials?.user as string;
         const password = credentials?.password as string;
@@ -38,15 +49,19 @@ const handler = NextAuth({
 
         console.log(user);
 
-        return { id: "1", name: credentials?.user };
+        return { id: "1", name: user, type: "teste" }; // Incluindo `type` no retorno
       },
     }),
   ],
   callbacks: {
-    jwt({ token }) {
+    jwt({ token, user }) {
+      if (user) {
+        token.type = user.type;
+      }
       return token;
     },
-    session({ session }) {
+    session({ session, token }) {
+      session.user.type = token.type as string;
       return session;
     },
   },
