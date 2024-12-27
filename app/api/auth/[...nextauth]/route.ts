@@ -6,16 +6,16 @@ declare module "next-auth" {
     user: User & {
       name?: string;
       user?: string;
-      type?: string; // Adicionei o `type` aqui
+      type?: string;
     };
   }
 
   interface JWT {
-    type?: string; // Adicionei o `type` ao token JWT
+    type?: string;
   }
 
   interface User {
-    type?: string; // Adicione a propriedade `type` ao User
+    type?: string;
   }
 }
 
@@ -47,12 +47,21 @@ const handler = NextAuth({
           return null;
         }
 
-        console.log(user);
-
-        return { id: "1", name: user, type: "teste" }; // Incluindo `type` no retorno
+        return { id: "1", name: user, type: "teste" };
       },
     }),
   ],
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: undefined,
+      },
+    },
+  },
   callbacks: {
     jwt({ token, user }) {
       if (user) {

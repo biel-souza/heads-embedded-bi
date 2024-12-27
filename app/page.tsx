@@ -1,3 +1,5 @@
+import { Container } from "@/components/Container";
+
 export default function Home() {
-  return <div>teste</div>;
+  return <Container loading={false}>teste</Container>;
 }

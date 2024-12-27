@@ -1,12 +1,6 @@
-import type { Metadata } from "next";
-
-import { Provider } from "@/components/Provider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "Heads Consultoria",
-  description: "Heads Consultoria",
-};
 
 export default function RootLayout({
   children,
@@ -15,9 +9,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body>
-        <Provider>{children}</Provider>
-      </body>
+      <body>{children}</body>
+      <ToastContainer />
     </html>
   );
 }
