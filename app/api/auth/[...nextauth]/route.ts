@@ -38,8 +38,6 @@ const handler = NextAuth({
         },
       },
       async authorize(credentials) {
-        console.log("authorize");
-        console.log(credentials);
         const user = credentials?.user as string;
         const password = credentials?.password as string;
 

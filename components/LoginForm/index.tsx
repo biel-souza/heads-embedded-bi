@@ -2,6 +2,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { IconButton, InputAdornment } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import { signIn, SignInOptions } from "next-auth/react";
+import { toast } from "react-toastify";
 import { useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -10,7 +11,6 @@ import { Form, LoginContainer, Logo, Title, Button } from "./style";
 import logo from "@/images/logo-login.jpeg";
 import { InputText } from "../InputText";
 import { Container } from "../Container";
-import { toast } from "react-toastify";
 
 const LoginForm = () => {
   const [loading, setLoading] = useState(false);
@@ -38,7 +38,6 @@ const LoginForm = () => {
 
       toast.success("Usuário logado!");
     } catch (error) {
-      console.error(error);
       toast.error("Erro ao fazer login!");
     }
     setLoading(false);
