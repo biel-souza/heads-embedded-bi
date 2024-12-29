@@ -1,10 +1,11 @@
 "use client";
 
 import { ReactNode, useState } from "react";
+import { Box } from "@mui/material";
+
 import { Container } from "../Container";
 import { AdminMenu } from "../AdminMenu";
-import { IconButton } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Content } from "./style";
 
 interface Props {
   children?: ReactNode;
@@ -13,14 +14,14 @@ interface Props {
 
 const AdminContainer = ({ children, loading }: Props) => {
   const [open, setOpen] = useState(false);
+  const drawerWidth = 240;
 
   return (
     <Container loading={loading}>
-      <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setOpen(true)}>
-        <MenuIcon />
-      </IconButton>
-      <AdminMenu open={open} toggleDrawer={setOpen} />
-      {children}
+      <AdminMenu open={open} toggleDrawer={() => setOpen(!open)} drawerWidth={drawerWidth} />
+      <Content drawerWidth={drawerWidth} open={open}>
+        {children}
+      </Content>
     </Container>
   );
 };
