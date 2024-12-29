@@ -8,7 +8,7 @@ interface ContentProps {
 export const Content = styled.div<ContentProps>`
   width: 100%;
   height: 100%;
-  min-height: 100vh;
   margin-top: 64px;
-  margin-left: ${(props) => (props.open ? props.drawerWidth : 0)}px;
+  padding: 25px;
+  padding-left: ${(props) => (props.open ? 25 + props.drawerWidth : 25)}px;
 `;

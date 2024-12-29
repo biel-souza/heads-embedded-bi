@@ -1,5 +1,8 @@
-import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
+import { Avatar, Menu, MenuItem } from "@mui/material";
+import { PiSignOutBold } from "react-icons/pi";
 import React, { useState } from "react";
+
+import { Text, TextInfo } from "./style";
 
 interface Props {
   name: string;
@@ -20,7 +23,7 @@ const UserAvatar = ({ name, onLogout }: Props) => {
 
   return (
     <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
-      <Avatar onClick={handleAvatarClick} style={{ cursor: "pointer", backgroundColor: "#707070" }}>
+      <Avatar onClick={handleAvatarClick} style={{ cursor: "pointer", backgroundColor: "#5a5a5a" }}>
         {name.charAt(0).toUpperCase()}
       </Avatar>
       <Menu
@@ -37,7 +40,7 @@ const UserAvatar = ({ name, onLogout }: Props) => {
         }}
       >
         <MenuItem disabled>
-          <Typography variant="subtitle1">{name}</Typography>
+          <TextInfo>{name}</TextInfo>
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -45,7 +48,8 @@ const UserAvatar = ({ name, onLogout }: Props) => {
             onLogout();
           }}
         >
-          Logout
+          <PiSignOutBold />
+          <Text>Sair</Text>
         </MenuItem>
       </Menu>
     </div>

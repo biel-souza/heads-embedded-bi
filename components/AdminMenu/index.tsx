@@ -1,9 +1,11 @@
-import { Box, Drawer, IconButton, Toolbar, Typography } from "@mui/material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import MenuIcon from "@mui/icons-material/Menu";
-import { AppBarStyled, List, Option, TextTitle } from "./style";
-import { IoBusinessOutline, IoBusinessSharp } from "react-icons/io5";
 import { FaRegWindowRestore, FaUserFriends } from "react-icons/fa";
+import { Box, Drawer, IconButton, Toolbar } from "@mui/material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { IoBusinessSharp } from "react-icons/io5";
+import MenuIcon from "@mui/icons-material/Menu";
+import { signOut } from "next-auth/react";
+
+import { AppBarStyled, List, Option, TextTitle } from "./style";
 import UserAvatar from "../UserAvatar";
 
 interface Props {
@@ -48,7 +50,7 @@ export const AdminMenu = ({ open, toggleDrawer, drawerWidth }: Props) => {
             <MenuIcon />
           </IconButton>
           <TextTitle>HEADS SOLUTIONS</TextTitle>
-          <UserAvatar name="teste" onLogout={() => null} />
+          <UserAvatar name="Gabriel Eduardo de Souza" onLogout={signOut} />
         </Toolbar>
       </AppBarStyled>
       <Drawer
@@ -87,7 +89,7 @@ export const AdminMenu = ({ open, toggleDrawer, drawerWidth }: Props) => {
           <Option href="/admin">
             <FaRegWindowRestore size={20} /> <p>PAINÉIS</p>
           </Option>
-          <Option href="/admin">
+          <Option href="/admin/users">
             <FaUserFriends size={22} /> <p>USUÁRIOS</p>
           </Option>
         </List>
