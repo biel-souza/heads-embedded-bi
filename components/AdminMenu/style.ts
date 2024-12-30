@@ -30,7 +30,16 @@ export const Option = styled(Link)`
   color: black;
   font-weight: bold;
   align-items: center;
+  :hover {
+    color: #0819c7;
+  }
   p {
     margin-left: 5px;
   }
+`;
+
+export const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
 `;

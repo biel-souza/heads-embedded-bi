@@ -5,16 +5,16 @@ import { IoBusinessSharp } from "react-icons/io5";
 import MenuIcon from "@mui/icons-material/Menu";
 import { signOut } from "next-auth/react";
 
-import { AppBarStyled, List, Option, TextTitle } from "./style";
+import { AppBarStyled, List, Option, TextTitle, Wrapper } from "./style";
 import UserAvatar from "../UserAvatar";
 
 interface Props {
   open: boolean;
   toggleDrawer: (value: boolean) => void;
-  drawerWidth: number;
+  drawerwidth: number;
 }
 
-export const AdminMenu = ({ open, toggleDrawer, drawerWidth }: Props) => {
+export const AdminMenu = ({ open, toggleDrawer, drawerwidth }: Props) => {
   return (
     <Box sx={{ display: "flex" }}>
       <AppBarStyled
@@ -26,8 +26,8 @@ export const AdminMenu = ({ open, toggleDrawer, drawerWidth }: Props) => {
               duration: theme.transitions.duration.leavingScreen,
             }),
           ...(open && {
-            width: `calc(100% - ${drawerWidth}px)`,
-            marginLeft: `${drawerWidth}px`,
+            width: `calc(100% - ${drawerwidth}px)`,
+            marginLeft: `${drawerwidth}px`,
             transition: (theme) =>
               theme.transitions.create(["margin", "width"], {
                 easing: theme.transitions.easing.easeOut,
@@ -58,10 +58,10 @@ export const AdminMenu = ({ open, toggleDrawer, drawerWidth }: Props) => {
         anchor="left"
         open={open}
         sx={{
-          width: drawerWidth,
+          width: drawerwidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": (theme) => ({
-            width: drawerWidth,
+            width: drawerwidth,
             boxSizing: "border-box",
             [theme.breakpoints.down("sm")]: {
               width: "100%",
@@ -84,13 +84,19 @@ export const AdminMenu = ({ open, toggleDrawer, drawerWidth }: Props) => {
         </Box>
         <List>
           <Option href="/admin">
-            <IoBusinessSharp size={20} /> <p>EMPRESAS</p>
+            <Wrapper>
+              <IoBusinessSharp size={20} /> <p>EMPRESAS</p>
+            </Wrapper>
           </Option>
           <Option href="/admin">
-            <FaRegWindowRestore size={20} /> <p>PAINÉIS</p>
+            <Wrapper>
+              <FaRegWindowRestore size={20} /> <p>PAINÉIS</p>
+            </Wrapper>
           </Option>
           <Option href="/admin/users">
-            <FaUserFriends size={22} /> <p>USUÁRIOS</p>
+            <Wrapper>
+              <FaUserFriends size={22} /> <p>USUÁRIOS</p>
+            </Wrapper>
           </Option>
         </List>
       </Drawer>

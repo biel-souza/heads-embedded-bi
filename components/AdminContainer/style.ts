@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 interface ContentProps {
   open: boolean;
-  drawerWidth: number;
+  drawerwidth: number;
 }
 
 export const Content = styled.div<ContentProps>`
@@ -10,5 +10,5 @@ export const Content = styled.div<ContentProps>`
   height: 100%;
   margin-top: 64px;
   padding: 25px;
-  padding-left: ${(props) => (props.open ? 25 + props.drawerWidth : 25)}px;
+  padding-left: ${(props) => (props.open ? 25 + props.drawerwidth : 25)}px;
 `;

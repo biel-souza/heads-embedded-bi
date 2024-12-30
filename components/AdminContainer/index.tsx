@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { Box } from "@mui/material";
 
 import { Container } from "../Container";
 import { AdminMenu } from "../AdminMenu";
@@ -14,12 +13,12 @@ interface Props {
 
 const AdminContainer = ({ children, loading }: Props) => {
   const [open, setOpen] = useState(false);
-  const drawerWidth = 240;
+  const drawerwidth = 240;
 
   return (
     <Container loading={loading}>
-      <AdminMenu open={open} toggleDrawer={() => setOpen(!open)} drawerWidth={drawerWidth} />
-      <Content drawerWidth={drawerWidth} open={open}>
+      <AdminMenu open={open} toggleDrawer={() => setOpen(!open)} drawerwidth={drawerwidth} />
+      <Content drawerwidth={drawerwidth} open={open}>
         {children}
       </Content>
     </Container>
