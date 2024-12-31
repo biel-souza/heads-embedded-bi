@@ -7,6 +7,5 @@ export const RForm = styled(Form)`
   margin-top: 10px;
   padding: 30px;
   display: flex;
-  flex-direction: column;
   border-radius: 10px;
 `;

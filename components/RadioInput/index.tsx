@@ -1,4 +1,5 @@
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { FormControlLabel, Radio } from "@mui/material";
+
 import { Error, Group, InputContainer, Label } from "./style";
 
 interface Props {

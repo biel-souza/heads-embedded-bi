@@ -83,7 +83,7 @@ export const AdminMenu = ({ open, toggleDrawer, drawerwidth }: Props) => {
           </IconButton>
         </Box>
         <List>
-          <Option href="/admin">
+          <Option href="/admin/companies">
             <Wrapper>
               <IoBusinessSharp size={20} /> <p>EMPRESAS</p>
             </Wrapper>
