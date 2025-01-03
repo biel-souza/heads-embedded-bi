@@ -12,6 +12,7 @@ export const Button = styled.button<Props>`
   align-items: center;
   padding: 10px 20px;
   border-radius: 5px;
+  border: 1px solid ${(props) => props.color};
   svg {
     color: ${(props) => props.color};
   }

@@ -7,11 +7,12 @@ interface Props {
   action: () => void;
   color: string;
   background: string;
+  className?: string;
 }
 
-export const ActionButton = ({ title, Icon, action, ...style }: Props) => {
+export const ActionButton = ({ title, Icon, action, className, ...style }: Props) => {
   return (
-    <Button {...style} onClick={action}>
+    <Button {...style} onClick={action} className={className}>
       <Icon size={20} />
       <Text {...style}>{title}</Text>
     </Button>

@@ -98,7 +98,7 @@ export const AdminMenu = ({ open, toggleDrawer, drawerwidth }: Props) => {
               <FaRegWindowRestore size={20} /> <p>PAINÉIS</p>
             </Wrapper>
           </Option>
-          <Option href="/admin/panels">
+          <Option href="/admin/users">
             <Wrapper>
               <FaUserFriends size={22} /> <p>USUÁRIOS</p>
             </Wrapper>

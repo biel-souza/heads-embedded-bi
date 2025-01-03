@@ -14,6 +14,10 @@ import { RadioInput } from "@/components/RadioInput";
 import type { CompanyType } from "@/types/companies.type";
 import { InputText } from "@/components/InputText";
 import api from "@/utils/api";
+import { ActionButton } from "@/components/ActionButton";
+import { FaPlus } from "react-icons/fa";
+import { Modal } from "@/components/Modal";
+import { TextAreaInput } from "@/components/TextAreaInput";
 
 interface ValuesType {
   user: string;
@@ -28,6 +32,9 @@ const RegisterUser = () => {
   const formikRef = useRef<FormikProps<ValuesType> | null>(null);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [panels, setPanels] = useState([]);
+  const [companyValue, setCompanyValue] = useState("");
+  const [openModal, setOpenModal] = useState(false);
 
   const validationSchema = Yup.object({
     user: Yup.string().required("O usuário é obrigatório"),
@@ -39,6 +46,11 @@ const RegisterUser = () => {
 
   const handleSubmit = (values: ValuesType) => {
     console.log(values);
+  };
+
+  const handleSubmitPanel = (values: unknown) => {
+    console.log(values);
+    setOpenModal(false);
   };
 
   const getCompanies = useCallback(async () => {
@@ -116,7 +128,11 @@ const RegisterUser = () => {
               <SelectInput
                 label="Empresa"
                 name="company"
-                onChange={handleChange}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  handleChange(e);
+                  setCompanyValue(e.target.value as string);
+                }}
                 error={errors.company}
                 value={values.company}
                 values={companies}
@@ -151,6 +167,58 @@ const RegisterUser = () => {
           </RegisterForm>
         )}
       </Formik>
+      {companyValue && (
+        <div className="container-multiple-values">
+          <h1>PAINÉIS</h1>
+
+          <div>
+            <ActionButton
+              title="NOVO ACESSO"
+              Icon={FaPlus}
+              background="white"
+              color="gray"
+              action={() => setOpenModal(true)}
+            />
+          </div>
+        </div>
+      )}
+      <Modal isOpen={openModal} closeModal={() => setOpenModal(false)}>
+        <Formik
+          initialValues={{ panel: "", filter: "" }}
+          onSubmit={(values) => {
+            handleSubmitPanel(values);
+          }}
+        >
+          {({ values, handleChange, handleSubmit }) => (
+            <RegisterForm onSubmit={handleSubmit}>
+              <div className="container-input">
+                <SelectInput
+                  label="Painél"
+                  name="panel"
+                  onChange={handleChange}
+                  value={values.panel}
+                  values={[
+                    { label: "Normal", value: "default" },
+                    { label: "Admin", value: "admin" },
+                  ]}
+                />
+              </div>
+              <div className="container-input">
+                <TextAreaInput label="Filtros" name="filter" onChange={handleChange} value={values.filter} />
+              </div>
+              <div className="modal-action-button">
+                <ActionButton
+                  action={() => handleSubmit()}
+                  background="gray"
+                  Icon={FaPlus}
+                  color="white"
+                  title="ADICIONAR"
+                />
+              </div>
+            </RegisterForm>
+          )}
+        </Formik>
+      </Modal>
     </AdminContainer>
   );
 };

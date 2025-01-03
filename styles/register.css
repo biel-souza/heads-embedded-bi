@@ -3,3 +3,21 @@
   padding: 5px 10px;
   max-width: 500px;
 }
+
+.modal-action-button{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-multiple-values {
+  padding: 20px 30px;
+  width: 100%;
+
+  h1 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+}

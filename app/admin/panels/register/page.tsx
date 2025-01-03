@@ -164,7 +164,7 @@ const RegisterPanels = () => {
                 value={values.status}
                 values={[
                   { label: "Finalizado", value: "finished" },
-                  { label: "Admin", value: "development" },
+                  { label: "Desenvolvimento", value: "development" },
                 ]}
               />
             </div>
