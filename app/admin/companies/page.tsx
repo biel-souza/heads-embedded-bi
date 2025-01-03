@@ -1,51 +1,51 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 import AdminContainer from "@/components/AdminContainer";
 import { HeaderTitle } from "@/components/HeaderTitle";
 import { RouteButton } from "@/components/RouteButton";
-import "@/styles/table.css";
-import api from "@/utils/api";
-import { CompanyType } from "@/types/companies";
 import Pagination from "@/components/Pagination";
+import { CompanyType } from "@/types/companies.type";
+import api from "@/utils/api";
+import "@/styles/table.css";
 
 const Companies = () => {
-  const limit = 10;
+  const limit = 15;
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(5);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [companies, setCompanies] = useState<CompanyType[]>([]);
 
   const handlePageChange = (cPage: number) => {
-    console.log(cPage);
     setPage(cPage);
   };
 
-  const getData = async () => {
+  const getData = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.get("/companies", { params: {} });
+      const { data } = await api.get("/companies", { params: { skip: page, take: limit } });
 
-      if (data) {
+      if (data?.data) {
         setCompanies(
-          data.map((company: CompanyType) => ({
+          data.data.map((company: CompanyType) => ({
             ...company,
             active: company.active ? "Sim" : "Não",
           }))
         );
+        setTotalPages(data.count);
       }
     } catch (error) {
       toast.error("Erro ao carregar empresas!");
     }
     setLoading(false);
-  };
+  }, [page]);
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [getData]);
 
   return (
     <AdminContainer loading={loading}>
@@ -73,7 +73,7 @@ const Companies = () => {
             ))}
           </tbody>
         </table>
-        <Pagination itemsPerPage={10} onPageChange={handlePageChange} page={page} total={totalPages} />
+        <Pagination itemsPerPage={limit} onPageChange={handlePageChange} page={page} total={totalPages} />
       </div>
     </AdminContainer>
   );

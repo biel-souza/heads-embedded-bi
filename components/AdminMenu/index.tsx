@@ -5,7 +5,8 @@ import { IoBusinessSharp } from "react-icons/io5";
 import MenuIcon from "@mui/icons-material/Menu";
 import { signOut } from "next-auth/react";
 
-import { AppBarStyled, List, Option, TextTitle, Wrapper } from "./style";
+import { AppBarStyled, List, LogoContainer, Option, TextTitle, Wrapper } from "./style";
+import logo from "@/images/logo-bg.png";
 import UserAvatar from "../UserAvatar";
 
 interface Props {
@@ -61,6 +62,9 @@ export const AdminMenu = ({ open, toggleDrawer, drawerwidth }: Props) => {
           width: drawerwidth,
           flexShrink: 0,
           "& .MuiDrawer-paper": (theme) => ({
+            backgroundColor: "rgb(230, 230, 230)",
+            display: "flex",
+            alignItems: "center",
             width: drawerwidth,
             boxSizing: "border-box",
             [theme.breakpoints.down("sm")]: {
@@ -71,6 +75,7 @@ export const AdminMenu = ({ open, toggleDrawer, drawerwidth }: Props) => {
       >
         <Box
           sx={{
+            width: "100%",
             display: "flex",
             alignItems: "center",
             padding: 1,
@@ -88,17 +93,18 @@ export const AdminMenu = ({ open, toggleDrawer, drawerwidth }: Props) => {
               <IoBusinessSharp size={20} /> <p>EMPRESAS</p>
             </Wrapper>
           </Option>
-          <Option href="/admin">
+          <Option href="/admin/panels">
             <Wrapper>
               <FaRegWindowRestore size={20} /> <p>PAINÉIS</p>
             </Wrapper>
           </Option>
-          <Option href="/admin/users">
+          <Option href="/admin/panels">
             <Wrapper>
               <FaUserFriends size={22} /> <p>USUÁRIOS</p>
             </Wrapper>
           </Option>
         </List>
+        <LogoContainer src={logo.src} />
       </Drawer>
     </Box>
   );

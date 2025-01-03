@@ -1,7 +1,6 @@
 import { Pagination as PaginationMui } from "@mui/material";
 
 import { PaginationContainer } from "./style";
-import { ChangeEvent } from "react";
 
 interface Props {
   page: number;
@@ -11,9 +10,11 @@ interface Props {
 }
 
 const Pagination = ({ page, itemsPerPage, onPageChange, total }: Props) => {
+  const pages = Math.ceil(total / itemsPerPage);
+
   return (
     <PaginationContainer>
-      <PaginationMui count={total} size="small" page={page} onChange={(e, p) => onPageChange(p)} />
+      <PaginationMui count={pages} size="small" page={page + 1} onChange={(e, p) => onPageChange(p - 1)} />
     </PaginationContainer>
   );
 };

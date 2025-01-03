@@ -3,6 +3,7 @@ import { PiSignOutBold } from "react-icons/pi";
 import React, { useState } from "react";
 
 import { Text, TextInfo } from "./style";
+import { colors } from "@/utils/colors";
 
 interface Props {
   name: string;
@@ -23,7 +24,7 @@ const UserAvatar = ({ name, onLogout }: Props) => {
 
   return (
     <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
-      <Avatar onClick={handleAvatarClick} style={{ cursor: "pointer", backgroundColor: "#5a5a5a" }}>
+      <Avatar onClick={handleAvatarClick} style={{ cursor: "pointer", backgroundColor: colors.default }}>
         {name.charAt(0).toUpperCase()}
       </Avatar>
       <Menu

@@ -43,3 +43,9 @@ export const Wrapper = styled.div`
   align-items: center;
   width: 100%;
 `;
+
+export const LogoContainer = styled.img`
+  max-width: 120px;
+  width: 100%;
+  margin-bottom: 10px;
+`;
