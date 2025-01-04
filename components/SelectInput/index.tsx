@@ -7,7 +7,7 @@ interface Props {
   error?: string;
   name: string;
   value?: string | boolean | number;
-  values: { value: string; label: string }[];
+  values: { value: string | number; label: string }[];
   onChange: (event: SelectChangeEvent<unknown>, child: ReactNode) => void;
 }
 

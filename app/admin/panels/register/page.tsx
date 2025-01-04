@@ -39,7 +39,6 @@ const RegisterPanels = () => {
     group_id: Yup.string().required("Group ID é obrigatório"),
     report_id: Yup.string().required("Report ID é obrigatório"),
     status: Yup.string().required("Status é obrigatório"),
-    filter: Yup.string().required("Filtro é obrigatório"),
   });
 
   const getCompanies = useCallback(async () => {

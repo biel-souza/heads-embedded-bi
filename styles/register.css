@@ -19,5 +19,9 @@
     font-size: 20px;
     margin-bottom: 10px;
   }
+  
+  .button-container{
+    margin: 20px 0 50px;
+  }
 
 }

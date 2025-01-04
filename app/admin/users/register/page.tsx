@@ -2,22 +2,25 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Formik, FormikProps } from "formik";
+import { useRouter } from "next/navigation";
+import { Modal } from "@/components/Modal";
+import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
+import { TextAreaInput } from "@/components/TextAreaInput";
+import type { CompanyType } from "@/types/companies.type";
 import { RegisterForm } from "@/components/RegisterForm";
 import AdminContainer from "@/components/AdminContainer";
+import { ActionButton } from "@/components/ActionButton";
 import { HeaderTitle } from "@/components/HeaderTitle";
 import { SelectInput } from "@/components/SelectInput";
 import { SaveButton } from "@/components/SaveButton";
 import { RadioInput } from "@/components/RadioInput";
-import type { CompanyType } from "@/types/companies.type";
+import type { PanelType } from "@/types/panels.type";
 import { InputText } from "@/components/InputText";
 import api from "@/utils/api";
-import { ActionButton } from "@/components/ActionButton";
-import { FaPlus } from "react-icons/fa";
-import { Modal } from "@/components/Modal";
-import { TextAreaInput } from "@/components/TextAreaInput";
+import "@/styles/table.css";
 
 interface ValuesType {
   user: string;
@@ -25,16 +28,30 @@ interface ValuesType {
   name: string;
   active: string;
   type: string;
-  company: string;
+  company_id: string;
+}
+
+interface PanelListType {
+  filter: string;
+  panel_name?: string;
+  panel_id: number | string;
+}
+
+interface ValueType {
+  label: string;
+  value: number | string;
 }
 
 const RegisterUser = () => {
   const formikRef = useRef<FormikProps<ValuesType> | null>(null);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [panels, setPanels] = useState([]);
+  const [panels, setPanels] = useState<PanelListType[]>([]);
+  const [panelsValue, setPanelsValue] = useState<ValueType[]>([]);
   const [companyValue, setCompanyValue] = useState("");
+  const [typeValue, setTypeValue] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
 
   const validationSchema = Yup.object({
     user: Yup.string().required("O usuário é obrigatório"),
@@ -44,14 +61,47 @@ const RegisterUser = () => {
     type: Yup.string().required("Tipo é obrigatório"),
   });
 
-  const handleSubmit = (values: ValuesType) => {
-    console.log(values);
+  const handleSubmit = async (values: ValuesType) => {
+    setLoading(true);
+    try {
+      console.log(values);
+      await api.post("/users", { ...values, panels });
+
+      toast.success("Salvo com sucesso!");
+      router.push("/admin/users");
+    } catch (error) {
+      toast.error("Erro ao salvar");
+    }
+    setLoading(false);
   };
 
-  const handleSubmitPanel = (values: unknown) => {
-    console.log(values);
+  const handleSubmitPanel = (values: PanelListType) => {
+    const valuesPanel = panels;
+
+    valuesPanel.push({
+      filter: values.filter,
+      panel_id: values.panel_id,
+      panel_name: panelsValue.filter((value) => value.value == values.panel_id)[0].label,
+    });
+
     setOpenModal(false);
   };
+
+  const getPanelByCompany = useCallback(async () => {
+    if (companyValue) {
+      setLoading(true);
+      try {
+        const { data } = await api.get("/panels", { params: { where: { company_id: companyValue } } });
+
+        if (data?.data) {
+          setPanelsValue(data.data.map((panel: PanelType) => ({ value: panel.id, label: panel.description })));
+        }
+      } catch (error) {
+        toast.error("Erro ao buscar painéis!");
+      }
+      setLoading(false);
+    }
+  }, [companyValue]);
 
   const getCompanies = useCallback(async () => {
     setLoading(true);
@@ -73,6 +123,10 @@ const RegisterUser = () => {
   }, []);
 
   useEffect(() => {
+    getPanelByCompany();
+  }, [getPanelByCompany]);
+
+  useEffect(() => {
     getCompanies();
   }, [getCompanies]);
 
@@ -83,7 +137,7 @@ const RegisterUser = () => {
       </HeaderTitle>
       <Formik
         innerRef={formikRef}
-        initialValues={{ user: "", password: "", name: "", active: "", type: "", company: "" }}
+        initialValues={{ user: "", password: "", name: "", active: "", type: "", company_id: "" }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
           handleSubmit(values);
@@ -127,14 +181,13 @@ const RegisterUser = () => {
             <div className="container-input">
               <SelectInput
                 label="Empresa"
-                name="company"
+                name="company_id"
                 onChange={(e) => {
-                  console.log(e.target.value);
                   handleChange(e);
                   setCompanyValue(e.target.value as string);
                 }}
-                error={errors.company}
-                value={values.company}
+                error={errors.company_id}
+                value={values.company_id}
                 values={companies}
               />
             </div>
@@ -142,7 +195,10 @@ const RegisterUser = () => {
               <SelectInput
                 label="Tipo"
                 name="type"
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  setTypeValue(e.target.value as string);
+                }}
                 error={errors.type}
                 value={values.type}
                 values={[
@@ -167,11 +223,11 @@ const RegisterUser = () => {
           </RegisterForm>
         )}
       </Formik>
-      {companyValue && (
+      {companyValue && typeValue == "default" && (
         <div className="container-multiple-values">
           <h1>PAINÉIS</h1>
 
-          <div>
+          <div className="button-container">
             <ActionButton
               title="NOVO ACESSO"
               Icon={FaPlus}
@@ -180,11 +236,31 @@ const RegisterUser = () => {
               action={() => setOpenModal(true)}
             />
           </div>
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Painel</th>
+                  <th>Filtro</th>
+                </tr>
+              </thead>
+              <tbody>
+                {panels.map((panel) => (
+                  <tr key={panel.panel_id}>
+                    <td>{panel.panel_id}</td>
+                    <td>{panel.panel_name}</td>
+                    <td>{panel.filter}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
       <Modal isOpen={openModal} closeModal={() => setOpenModal(false)}>
         <Formik
-          initialValues={{ panel: "", filter: "" }}
+          initialValues={{ panel_id: "", filter: "" }}
           onSubmit={(values) => {
             handleSubmitPanel(values);
           }}
@@ -194,13 +270,10 @@ const RegisterUser = () => {
               <div className="container-input">
                 <SelectInput
                   label="Painél"
-                  name="panel"
+                  name="panel_id"
                   onChange={handleChange}
-                  value={values.panel}
-                  values={[
-                    { label: "Normal", value: "default" },
-                    { label: "Admin", value: "admin" },
-                  ]}
+                  value={values.panel_id}
+                  values={panelsValue}
                 />
               </div>
               <div className="container-input">
