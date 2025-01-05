@@ -84,6 +84,8 @@ const RegisterUser = () => {
       panel_name: panelsValue.filter((value) => value.value == values.panel_id)[0].label,
     });
 
+    setPanels(valuesPanel);
+
     setOpenModal(false);
   };
 
