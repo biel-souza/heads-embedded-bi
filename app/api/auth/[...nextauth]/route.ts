@@ -1,8 +1,11 @@
 import Credentials from "next-auth/providers/credentials";
 import NextAuth from "next-auth";
+import jsonwebtoken from "jsonwebtoken";
+import api_login from "@/utils/api_login";
 
 declare module "next-auth" {
   interface Session {
+    jwt?: string;
     user: User & {
       name?: string;
       user?: string;
@@ -38,14 +41,28 @@ const handler = NextAuth({
         },
       },
       async authorize(credentials) {
-        const user = credentials?.user as string;
-        const password = credentials?.password as string;
+        try {
+          const user = credentials?.user as string;
+          const password = credentials?.password as string;
 
-        if (!user || !password) {
+          if (!user || !password) {
+            return null;
+          }
+
+          const { data: userLogin } = await api_login.post("/login", { user, password });
+          console.log(userLogin);
+
+          if (!userLogin) {
+            return null;
+          }
+
+          console.log(userLogin);
+
+          return { id: "1", name: user, type: "teste" };
+        } catch (error) {
+          console.log(error);
           return null;
         }
-
-        return { id: "1", name: user, type: "teste" };
       },
     }),
   ],
@@ -56,7 +73,7 @@ const handler = NextAuth({
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        maxAge: undefined,
+        maxAge: 60 * 60 * 2,
       },
     },
   },
@@ -69,6 +86,10 @@ const handler = NextAuth({
     },
     session({ session, token }) {
       session.user.type = token.type as string;
+
+      const jwt = jsonwebtoken.sign(session.user, process.env.NEXTAUTH_SECRET as string);
+      session.jwt = jwt;
+
       return session;
     },
   },
