@@ -19,6 +19,7 @@ declare module "next-auth" {
 
   interface User {
     type?: string;
+    user?: string;
   }
 }
 
@@ -50,17 +51,13 @@ const handler = NextAuth({
           }
 
           const { data: userLogin } = await api_login.post("/login", { user, password });
-          console.log(userLogin);
 
           if (!userLogin) {
             return null;
           }
 
-          console.log(userLogin);
-
-          return { id: "1", name: user, type: "teste" };
+          return { id: userLogin.id, name: userLogin.name, type: userLogin.type, user: userLogin.user };
         } catch (error) {
-          console.log(error);
           return null;
         }
       },
@@ -81,6 +78,7 @@ const handler = NextAuth({
     jwt({ token, user }) {
       if (user) {
         token.type = user.type;
+        token.user = user.user;
       }
       return token;
     },

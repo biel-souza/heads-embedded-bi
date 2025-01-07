@@ -6,9 +6,16 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith("/login") && token) {
+  if (pathname.startsWith("/login") && token?.type === "admin") {
     const url = req.nextUrl.clone();
     url.pathname = "/admin";
+
+    return NextResponse.redirect(url);
+  }
+
+  if (pathname.startsWith("/login") && token?.type === "default") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/";
 
     return NextResponse.redirect(url);
   }
@@ -16,6 +23,21 @@ export async function middleware(req: NextRequest) {
   if (!token && !pathname.startsWith("/login") && !pathname.includes("auth")) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
+
+    return NextResponse.redirect(url);
+  }
+
+  if (pathname.includes("/admin") && token?.type != "admin") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/";
+
+    return NextResponse.redirect(url);
+  }
+
+  if (!pathname.includes("/admin") && token?.type == "admin") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/admin";
+
     return NextResponse.redirect(url);
   }
 }

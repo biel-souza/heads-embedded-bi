@@ -2,6 +2,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { IconButton, InputAdornment } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import { signIn, SignInOptions } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { Formik } from "formik";
@@ -15,6 +16,7 @@ import { Container } from "../Container";
 const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -34,9 +36,14 @@ const LoginForm = () => {
   const handleSubmit = async (values: SignInOptions) => {
     setLoading(true);
     try {
-      await signIn("credentials", values);
+      const user = await signIn("credentials", { ...values, redirect: false });
 
-      toast.success("Usuário logado!");
+      if (user?.error) {
+        toast.error("Usuário ou senha inválidos!");
+      } else {
+        router.push("/");
+        toast.success("Usuário logado!");
+      }
     } catch (error) {
       toast.error("Erro ao fazer login!");
     }

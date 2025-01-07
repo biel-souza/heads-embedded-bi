@@ -24,7 +24,7 @@ const UserAvatar = ({ name, onLogout }: Props) => {
 
   return (
     <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
-      <Avatar onClick={handleAvatarClick} style={{ cursor: "pointer", backgroundColor: colors.default }}>
+      <Avatar onClick={handleAvatarClick} style={{ cursor: "pointer", backgroundColor: "gray" }}>
         {name.charAt(0).toUpperCase()}
       </Avatar>
       <Menu
