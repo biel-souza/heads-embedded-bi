@@ -41,7 +41,7 @@ const LoginForm = () => {
       if (user?.error) {
         toast.error("Usuário ou senha inválidos!");
       } else {
-        router.push("/");
+        router.push("/dashboard");
         toast.success("Usuário logado!");
       }
     } catch (error) {

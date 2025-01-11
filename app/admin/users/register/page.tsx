@@ -64,7 +64,6 @@ const RegisterUser = () => {
   const handleSubmit = async (values: ValuesType) => {
     setLoading(true);
     try {
-      console.log(values);
       await api.post("/users", { ...values, panels });
 
       toast.success("Salvo com sucesso!");

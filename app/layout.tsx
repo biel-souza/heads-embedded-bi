@@ -1,6 +1,9 @@
+"use client";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+import { SessionProvider } from "next-auth/react";
 
 export default function RootLayout({
   children,
@@ -10,7 +13,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body>
-        {children}
+        <SessionProvider>{children}</SessionProvider>
         <ToastContainer />
       </body>
     </html>

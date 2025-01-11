@@ -27,7 +27,6 @@ const Users = () => {
     setLoading(true);
     try {
       const { data } = await api.get("/users", { params: {} });
-      console.log(data);
 
       if (data.data) {
         setUsers(data.data);

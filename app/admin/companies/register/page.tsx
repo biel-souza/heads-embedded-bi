@@ -36,7 +36,6 @@ const RegisterCompanies = () => {
   });
 
   const handleSubmit = async (values: ValuesType) => {
-    console.log(values);
     setLoading(true);
     try {
       await api.post("/companies", values);

@@ -26,6 +26,7 @@ export const SelectStyled = styled(Select)`
   border: 1px solid rgb(143, 143, 143);
   color: rgb(80, 80, 80);
   font-size: 14px;
+  background-color: white;
   fieldset {
     border: none;
   }
