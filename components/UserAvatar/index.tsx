@@ -3,7 +3,6 @@ import { PiSignOutBold } from "react-icons/pi";
 import React, { useState } from "react";
 
 import { Text, TextInfo } from "./style";
-import { colors } from "@/utils/colors";
 
 interface Props {
   name: string;

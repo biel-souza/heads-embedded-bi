@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import * as powerbi from "powerbi-client";
 import { Container } from "./style";
+import dynamic from "next/dynamic";
 
 interface Props {
   token: string;
@@ -10,7 +11,7 @@ interface Props {
   filters?: string;
 }
 
-export const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
+const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
   const embedContainer = useRef(null);
 
   useEffect(() => {
@@ -20,6 +21,15 @@ export const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
         powerbi.factories.wpmpFactory,
         powerbi.factories.routerFactory
       );
+
+      const filter: any = [];
+
+      if (filters) {
+        const posicao = filters.indexOf("{");
+
+        const resultado = filters.substring(posicao);
+        filter.push(eval("(" + resultado + ")"));
+      }
 
       const config: powerbi.service.IComponentEmbedConfiguration = {
         type: "report",
@@ -31,12 +41,15 @@ export const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
           filterPaneEnabled: false,
           navContentPaneEnabled: true,
         },
+        filters: filter,
       };
 
       powerbiService.reset(embedContainer.current);
       powerbiService.embed(embedContainer.current, config);
     }
-  }, [token, reportId]);
+  }, [token, reportId, filters]);
 
   return <Container ref={embedContainer} />;
 };
+
+export default PowerBIEmbed;

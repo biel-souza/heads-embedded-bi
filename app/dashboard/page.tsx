@@ -5,14 +5,16 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import DashboardContainer from "@/components/DashboardContainer";
-import { PowerBIEmbed } from "@/components/PowerBiEmbedded";
+const PowerBIEmbed = dynamic(() => import("@/components/PowerBiEmbedded"), { ssr: false });
 import api from "@/utils/api";
+import dynamic from "next/dynamic";
 
 const Dashboard = () => {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(false);
   const [reportId, setReportId] = useState("");
   const [token, setToken] = useState("");
+  const [filter, setFilter] = useState("");
 
   const getToken = async () => {
     setLoading(true);
@@ -38,6 +40,16 @@ const Dashboard = () => {
     getToken();
   }, [status]);
 
+  useEffect(() => {
+    if (reportId) {
+      const panel = session?.user?.panels?.filter((panel) => panel?.report_id == reportId)[0];
+
+      if (panel?.filter) {
+        setFilter(panel.filter);
+      }
+    }
+  }, [reportId, session?.user?.panels]);
+
   return (
     <DashboardContainer
       loading={loading}
@@ -47,7 +59,7 @@ const Dashboard = () => {
         values: session?.user.panels.map((panel) => ({ value: panel.report_id, label: panel.description })),
       }}
     >
-      {token && <PowerBIEmbed reportId={reportId} token={token} />}
+      {token && <PowerBIEmbed reportId={reportId} token={token} filters={filter} />}
     </DashboardContainer>
   );
 };

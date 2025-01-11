@@ -26,3 +26,12 @@ tbody tr {
   padding: 20px;
   border-bottom: 5px solid white;
 }
+
+.buttons-table {
+  display: flex;
+
+  button {
+    border: 0;
+    cursor: pointer;
+  }
+}
