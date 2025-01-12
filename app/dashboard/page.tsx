@@ -3,11 +3,11 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-import DashboardContainer from "@/components/DashboardContainer";
-const PowerBIEmbed = dynamic(() => import("@/components/PowerBiEmbedded"), { ssr: false });
-import api from "@/utils/api";
 import dynamic from "next/dynamic";
+
+const PowerBIEmbed = dynamic(() => import("@/components/PowerBiEmbedded"), { ssr: false });
+import DashboardContainer from "@/components/DashboardContainer";
+import api from "@/utils/api";
 
 const Dashboard = () => {
   const { data: session, status } = useSession();

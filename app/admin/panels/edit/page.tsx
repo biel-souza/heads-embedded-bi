@@ -1,21 +1,21 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Formik, FormikProps } from "formik";
-import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
 import { TextAreaInput } from "@/components/TextAreaInput";
-import type { CompanyType } from "@/types/companies.type";
 import AdminContainer from "@/components/AdminContainer";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SelectInput } from "@/components/SelectInput";
 import { HeaderTitle } from "@/components/HeaderTitle";
-import { BackButton } from "@/components/BackButton";
+import type { CompanyType } from "@/types/companies.type";
 import { SaveButton } from "@/components/SaveButton";
 import { InputText } from "@/components/InputText";
 import api from "@/utils/api";
+import { BackButton } from "@/components/BackButton";
 
 interface ValuesType {
   description: string;
@@ -27,10 +27,12 @@ interface ValuesType {
   company_id?: number | string;
 }
 
-const RegisterPanels = () => {
+const EditPanels = () => {
   const formikRef = useRef<FormikProps<ValuesType> | null>(null);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const router = useRouter();
 
   const validationSchema = Yup.object({
@@ -68,7 +70,7 @@ const RegisterPanels = () => {
   const handleSubmit = async (values: ValuesType) => {
     setLoading(true);
     try {
-      await api.post("/panels", values);
+      await api.patch(`/panels/${id}`, values);
 
       router.push("/admin/panels");
       toast.success("Salvo com sucesso!");
@@ -78,9 +80,25 @@ const RegisterPanels = () => {
     setLoading(false);
   };
 
+  useEffect(() => {
+    const getData = async () => {
+      setLoading(true);
+      try {
+        const { data } = await api.get(`/panels/${id}`);
+
+        formikRef.current?.setValues(data);
+      } catch (error) {
+        router.push("/admin/panels");
+        toast.error("Erro ao buscar painél!");
+      }
+      setLoading(false);
+    };
+    getData();
+  }, []);
+
   return (
     <AdminContainer loading={loading}>
-      <HeaderTitle title="Cadastrar Painel">
+      <HeaderTitle title="Editar Painel">
         <BackButton route="/admin/panels" />
         <SaveButton action={() => formikRef.current?.submitForm()} />
       </HeaderTitle>
@@ -185,4 +203,4 @@ const RegisterPanels = () => {
   );
 };
 
-export default RegisterPanels;
+export default EditPanels;

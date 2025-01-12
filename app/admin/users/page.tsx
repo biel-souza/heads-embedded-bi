@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { MdEdit } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -18,6 +20,7 @@ const Users = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [users, setUsers] = useState<UserType[]>([]);
+  const router = useRouter();
 
   const handlePageChange = (cPage: number) => {
     setPage(cPage);
@@ -66,6 +69,13 @@ const Users = () => {
                 <td>{panel.user}</td>
                 <td>{panel.userCompanies?.[0]?.company.description}</td>
                 <td>{panel.active ? "Sim" : "Não"}</td>
+                <td>
+                  <div className="buttons-table">
+                    <button onClick={() => router.push(`/admin/users/edit?id=${panel.id}`)}>
+                      <MdEdit size={20} />
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -1,11 +1,11 @@
+import { signOut, useSession } from "next-auth/react";
 import { SelectChangeEvent } from "@mui/material";
-import { signOut } from "next-auth/react";
 import { ReactNode } from "react";
 
+import { Header, SelectContainer, Title } from "./style";
 import { SelectInput } from "../SelectInput";
 import { Container } from "../Container";
 import UserAvatar from "../UserAvatar";
-import { Header, SelectContainer, Title } from "./style";
 
 interface Props {
   loading: boolean;
@@ -25,7 +25,7 @@ const DashboardContainer = ({ loading, children, select }: Props) => {
         <SelectContainer>
           <SelectInput name="panel" values={select.values} value={select.value} onChange={select.onChange} />
         </SelectContainer>
-        <UserAvatar name="Gabriel Eduardo de Souza" onLogout={signOut} />
+        <UserAvatar onLogout={signOut} />
       </Header>
       {children}
     </Container>

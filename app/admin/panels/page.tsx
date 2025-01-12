@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { MdEdit } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -18,6 +20,7 @@ const Panels = () => {
   const [loading, setLoading] = useState(false);
   const [panels, setPanels] = useState<PanelType[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const router = useRouter();
 
   const status: { [value: string]: string } = {
     finished: "Finalizado",
@@ -87,6 +90,13 @@ const Panels = () => {
                 <td>{panel.description}</td>
                 <td>{panel.company_id}</td>
                 <td>{status[panel.status]}</td>
+                <td>
+                  <div className="buttons-table">
+                    <button onClick={() => router.push(`/admin/panels/edit?id=${panel.id}`)}>
+                      <MdEdit size={20} />
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

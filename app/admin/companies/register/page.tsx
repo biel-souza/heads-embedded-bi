@@ -7,11 +7,12 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 
 import AdminContainer from "@/components/AdminContainer";
+import { RegisterForm } from "@/components/RegisterForm";
 import { HeaderTitle } from "@/components/HeaderTitle";
 import { SaveButton } from "@/components/SaveButton";
-import { RegisterForm } from "@/components/RegisterForm";
-import { InputText } from "@/components/InputText";
 import { RadioInput } from "@/components/RadioInput";
+import { BackButton } from "@/components/BackButton";
+import { InputText } from "@/components/InputText";
 import api from "@/utils/api";
 
 interface ValuesType {
@@ -51,6 +52,7 @@ const RegisterCompanies = () => {
   return (
     <AdminContainer loading={loading}>
       <HeaderTitle title="Cadastrar Empresa">
+        <BackButton route="/admin/companies" />
         <SaveButton action={() => formikRef.current?.submitForm()} />
       </HeaderTitle>
       <Formik

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Formik, FormikProps } from "formik";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Modal } from "@/components/Modal";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -43,7 +43,7 @@ interface ValueType {
   value: number | string;
 }
 
-const RegisterUser = () => {
+const EditUser = () => {
   const formikRef = useRef<FormikProps<ValuesType> | null>(null);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -52,6 +52,8 @@ const RegisterUser = () => {
   const [companyValue, setCompanyValue] = useState("");
   const [typeValue, setTypeValue] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const router = useRouter();
 
   const validationSchema = Yup.object({
@@ -65,7 +67,7 @@ const RegisterUser = () => {
   const handleSubmit = async (values: ValuesType) => {
     setLoading(true);
     try {
-      await api.post("/users", { ...values, panels });
+      await api.patch(`/users/${id}`, { ...values, panels });
 
       toast.success("Salvo com sucesso!");
       router.push("/admin/users");
@@ -132,9 +134,43 @@ const RegisterUser = () => {
     getCompanies();
   }, [getCompanies]);
 
+  useEffect(() => {
+    const getData = async () => {
+      setLoading(true);
+      try {
+        const { data } = await api.get(`/users/${id}`);
+
+        const values = {
+          ...data,
+          company_id: data?.userCompanies?.[0]?.company?.id ?? "",
+        };
+
+        setTypeValue(values.type);
+        setCompanyValue(data?.userCompanies?.[0]?.company?.id ?? "");
+
+        if (data.userPanels?.length) {
+          setPanels(
+            data.userPanels.map((panel: any) => ({
+              panel_id: panel.panel.id,
+              panel_name: panel.panel.description,
+              filter: panel.filter,
+            }))
+          );
+        }
+
+        formikRef.current?.setValues(values);
+      } catch (error) {
+        router.push("/admin/users");
+        toast.error("Erro ao buscar painél!");
+      }
+      setLoading(false);
+    };
+    getData();
+  }, []);
+
   return (
     <AdminContainer loading={loading}>
-      <HeaderTitle title="Cadastrar Usuário">
+      <HeaderTitle title="Editar Usuário">
         <BackButton route="/admin/users" />
         <SaveButton action={() => formikRef.current?.submitForm()} />
       </HeaderTitle>
@@ -299,4 +335,4 @@ const RegisterUser = () => {
   );
 };
 
-export default RegisterUser;
+export default EditUser;

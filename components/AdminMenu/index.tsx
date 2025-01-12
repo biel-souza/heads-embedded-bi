@@ -1,9 +1,9 @@
 import { FaRegWindowRestore, FaUserFriends } from "react-icons/fa";
 import { Box, Drawer, IconButton, Toolbar } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { signOut, useSession } from "next-auth/react";
 import { IoBusinessSharp } from "react-icons/io5";
 import MenuIcon from "@mui/icons-material/Menu";
-import { signOut } from "next-auth/react";
 
 import { AppBarStyled, List, LogoContainer, Option, TextTitle, Wrapper } from "./style";
 import logo from "@/images/logo-bg.png";
@@ -51,7 +51,7 @@ export const AdminMenu = ({ open, toggleDrawer, drawerwidth }: Props) => {
             <MenuIcon />
           </IconButton>
           <TextTitle>HEADS SOLUTIONS</TextTitle>
-          <UserAvatar name="Gabriel Eduardo de Souza" onLogout={signOut} />
+          <UserAvatar onLogout={signOut} />
         </Toolbar>
       </AppBarStyled>
       <Drawer

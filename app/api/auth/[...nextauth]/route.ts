@@ -92,6 +92,7 @@ const handler = NextAuth({
           user: user.user,
           panels: user.panels,
           company: user.company,
+          name: user.name,
         };
       }
 
