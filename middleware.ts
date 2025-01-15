@@ -8,9 +8,6 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  console.log("aoooobaa");
-  console.log(pathname);
-
   if (pathname == "/" && token?.user?.type === "admin") {
     const url = req.nextUrl.clone();
     url.pathname = "/admin";
