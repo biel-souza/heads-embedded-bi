@@ -8,6 +8,20 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
+  if (pathname == "/" && token?.user?.type === "admin") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/admin";
+
+    return NextResponse.redirect(url);
+  }
+
+  if (pathname == "/" && token?.user?.type === "default") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/dashboard";
+
+    return NextResponse.redirect(url);
+  }
+
   if (pathname.startsWith("/login") && token?.user?.type === "admin") {
     const url = req.nextUrl.clone();
     url.pathname = "/admin";
