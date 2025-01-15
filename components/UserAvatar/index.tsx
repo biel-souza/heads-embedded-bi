@@ -24,8 +24,6 @@ const UserAvatar = ({ onLogout }: Props) => {
   };
 
   useEffect(() => {
-    console.log(status);
-    console.log(session?.user);
     if (status === "authenticated") {
       setName(session?.user.name as string);
     }
