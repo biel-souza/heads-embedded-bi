@@ -77,7 +77,7 @@ const handler = NextAuth({
       name: "next-auth.session-token",
       options: {
         httpOnly: true,
-        sameSite: "none",
+        sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 2,
       },
