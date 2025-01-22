@@ -83,6 +83,22 @@ const handler = NextAuth({
         maxAge: 60 * 60 * 2,
       },
     },
+    csrfToken: {
+      name: `next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      },
+    },
+    callbackUrl: {
+      name: `next-auth.callback-url`,
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      },
+    },
   },
   callbacks: {
     jwt({ token, user }) {
