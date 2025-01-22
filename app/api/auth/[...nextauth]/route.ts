@@ -106,6 +106,10 @@ const handler = NextAuth({
 
       return session;
     },
+
+    async redirect({ baseUrl, url }) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
   },
 });
 
