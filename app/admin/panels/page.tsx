@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -29,6 +29,19 @@ const Panels = () => {
 
   const handlePageChange = (cPage: number) => {
     setPage(cPage);
+  };
+
+  const deletePanel = async (panel_id: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`/panels/${panel_id}`);
+
+      getData();
+      toast.success("Deletado com sucesso!");
+    } catch (error) {
+      toast.error("Usuarios estão utilizando essa painel!");
+    }
+    setLoading(false);
   };
 
   const getCompanies = async () => {
@@ -94,6 +107,9 @@ const Panels = () => {
                   <div className="buttons-table">
                     <button onClick={() => router.push(`/admin/panels/edit?id=${panel.id}`)}>
                       <MdEdit size={20} />
+                    </button>
+                    <button onClick={() => deletePanel(panel.id)}>
+                      <MdDelete size={20} />
                     </button>
                   </div>
                 </td>

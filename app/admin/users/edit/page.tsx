@@ -22,6 +22,7 @@ import { BackButton } from "@/components/BackButton";
 import { InputText } from "@/components/InputText";
 import api from "@/utils/api";
 import "@/styles/table.css";
+import { MdDelete } from "react-icons/md";
 
 interface ValuesType {
   user: string;
@@ -91,6 +92,18 @@ const EditUser = () => {
     setOpenModal(false);
   };
 
+  const deletePanel = async (panel_id: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`/users/panel/${id}/${panel_id}`);
+      toast.success("Deletado com sucesso!");
+      getData();
+    } catch (error) {
+      toast.error("Erro ao deletar!");
+    }
+    setLoading(false);
+  };
+
   const getPanelByCompany = useCallback(async () => {
     if (companyValue) {
       setLoading(true);
@@ -126,6 +139,39 @@ const EditUser = () => {
     setLoading(false);
   }, []);
 
+  const getData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/users/${id}`);
+
+      const values = {
+        ...data,
+        company_id: data?.userCompanies?.[0]?.company?.id ?? "",
+      };
+
+      setTypeValue(values.type);
+      setCompanyValue(data?.userCompanies?.[0]?.company?.id ?? "");
+
+      if (data.userPanels?.length) {
+        setPanels(
+          data.userPanels.map((panel: any) => ({
+            panel_id: panel.panel.id,
+            panel_name: panel.panel.description,
+            filter: panel.filter,
+          }))
+        );
+      } else {
+        setPanels([]);
+      }
+
+      formikRef.current?.setValues(values);
+    } catch (error) {
+      router.push("/admin/users");
+      toast.error("Erro ao buscar painél!");
+    }
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
     getPanelByCompany();
   }, [getPanelByCompany]);
@@ -135,38 +181,8 @@ const EditUser = () => {
   }, [getCompanies]);
 
   useEffect(() => {
-    const getData = async () => {
-      setLoading(true);
-      try {
-        const { data } = await api.get(`/users/${id}`);
-
-        const values = {
-          ...data,
-          company_id: data?.userCompanies?.[0]?.company?.id ?? "",
-        };
-
-        setTypeValue(values.type);
-        setCompanyValue(data?.userCompanies?.[0]?.company?.id ?? "");
-
-        if (data.userPanels?.length) {
-          setPanels(
-            data.userPanels.map((panel: any) => ({
-              panel_id: panel.panel.id,
-              panel_name: panel.panel.description,
-              filter: panel.filter,
-            }))
-          );
-        }
-
-        formikRef.current?.setValues(values);
-      } catch (error) {
-        router.push("/admin/users");
-        toast.error("Erro ao buscar painél!");
-      }
-      setLoading(false);
-    };
     getData();
-  }, []);
+  }, [getData]);
 
   return (
     <AdminContainer loading={loading}>
@@ -290,6 +306,13 @@ const EditUser = () => {
                     <td>{panel.panel_id}</td>
                     <td>{panel.panel_name}</td>
                     <td>{panel.filter}</td>
+                    <td>
+                      <div className="buttons-table">
+                        <button onClick={() => deletePanel(panel.panel_id as number)}>
+                          <MdDelete size={20} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

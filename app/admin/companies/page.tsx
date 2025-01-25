@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -24,6 +24,19 @@ const Companies = () => {
 
   const handlePageChange = (cPage: number) => {
     setPage(cPage);
+  };
+
+  const deleteCompany = async (company_id: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`/companies/${company_id}`);
+
+      getData();
+      toast.success("Deletado com sucesso!");
+    } catch (error) {
+      toast.error("Usuarios estão utilizando essa empresa!");
+    }
+    setLoading(false);
   };
 
   const getData = useCallback(async () => {
@@ -63,6 +76,7 @@ const Companies = () => {
               <th>Descrição</th>
               <th>Ativo</th>
               <th>Data de criação</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -76,6 +90,9 @@ const Companies = () => {
                   <div className="buttons-table">
                     <button onClick={() => router.push(`/admin/companies/edit?id=${company.id}`)}>
                       <MdEdit size={20} />
+                    </button>
+                    <button onClick={() => deleteCompany(company.id)}>
+                      <MdDelete size={20} />
                     </button>
                   </div>
                 </td>

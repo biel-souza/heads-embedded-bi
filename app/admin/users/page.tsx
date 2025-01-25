@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -24,6 +24,19 @@ const Users = () => {
 
   const handlePageChange = (cPage: number) => {
     setPage(cPage);
+  };
+
+  const deleteUser = async (user_id: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`/users/${user_id}`);
+
+      getUsers();
+      toast.success("Deletado com sucesso");
+    } catch (error) {
+      toast.error("Erro ao deletar usuario!");
+    }
+    setLoading(false);
   };
 
   const getUsers = useCallback(async () => {
@@ -59,20 +72,24 @@ const Users = () => {
               <th>Usuário</th>
               <th>Empresa</th>
               <th>Ativo</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((panel) => (
-              <tr key={panel.id}>
-                <td>{panel.id}</td>
-                <td>{panel.name}</td>
-                <td>{panel.user}</td>
-                <td>{panel.userCompanies?.[0]?.company.description}</td>
-                <td>{panel.active ? "Sim" : "Não"}</td>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.name}</td>
+                <td>{user.user}</td>
+                <td>{user.userCompanies?.[0]?.company.description}</td>
+                <td>{user.active ? "Sim" : "Não"}</td>
                 <td>
                   <div className="buttons-table">
-                    <button onClick={() => router.push(`/admin/users/edit?id=${panel.id}`)}>
+                    <button onClick={() => router.push(`/admin/users/edit?id=${user.id}`)}>
                       <MdEdit size={20} />
+                    </button>
+                    <button onClick={() => deleteUser(user.id)}>
+                      <MdDelete size={20} />
                     </button>
                   </div>
                 </td>
