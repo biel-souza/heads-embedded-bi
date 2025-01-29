@@ -3,7 +3,6 @@
 import React, { useEffect, useRef } from "react";
 import * as powerbi from "powerbi-client";
 import { Container } from "./style";
-import dynamic from "next/dynamic";
 
 interface Props {
   token: string;
@@ -22,13 +21,20 @@ const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
         powerbi.factories.routerFactory
       );
 
-      const filter: any = [];
+      let filter: any = [];
 
       if (filters) {
-        const posicao = filters.indexOf("{");
+        const regex = /(\{(?:[^{}]*|\{(?:[^{}]*|\{[^{}]*\})*\})*\})/g;
+        const matches = [];
+        let match;
 
-        const resultado = filters.substring(posicao);
-        filter.push(eval("(" + resultado + ")"));
+        while ((match = regex.exec(filters)) !== null) {
+          matches.push(match[0]);
+        }
+
+        filter = matches.map((json) => {
+          return eval("(" + json + ")");
+        });
       }
 
       const config: powerbi.service.IComponentEmbedConfiguration = {
