@@ -22,6 +22,14 @@ const nextConfig: NextConfig = {
             key: "X-Frame-Options",
             value: "ALLOWALL",
           },
+          {
+            key: "Permissions-Policy",
+            value: "interest-cohort=()",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
         ],
       },
     ];
