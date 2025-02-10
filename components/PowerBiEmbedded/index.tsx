@@ -13,6 +13,7 @@ interface Props {
 const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
   const mobileWidth = 900;
   const embedContainer = useRef(null);
+  const [filterPage, setFilterPage] = useState({ page: "", filter: [] });
   const [isMobile, setIsMobile] = useState<boolean>(
     () => typeof window != "undefined" && window.innerWidth < mobileWidth
   );
@@ -53,6 +54,12 @@ const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
         });
       }
 
+      let useFilters = filter.filter((f: any) => !f.target.pageName).map((f: any) => f);
+
+      if (filterPage.filter.length) {
+        useFilters = filterPage.filter;
+      }
+
       const config: powerbi.service.IComponentEmbedConfiguration = {
         type: "report",
         id: reportId,
@@ -64,13 +71,50 @@ const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
           navContentPaneEnabled: isMobile ? false : true,
           layoutType: isMobile ? powerbi.models.LayoutType.MobileLandscape : powerbi.models.LayoutType.Custom,
         },
-        filters: filter,
+        filters: useFilters,
+        pageName: filterPage.page,
       };
 
       powerbiService.reset(embedContainer.current);
-      powerbiService.embed(embedContainer.current, config);
+      const report = powerbiService.embed(embedContainer.current, config) as powerbi.Report;
+
+      report.on("loaded", async () => {
+        if (filter.length) {
+          try {
+            const pages = await report.getPages();
+
+            if (pages.length) {
+              const activePage = pages.find((page) => page.isActive) || pages[0];
+
+              if (activePage.name != filterPage.page) {
+                const initialPageFilters = filter
+                  .filter((f: any) => f.target.pageName === activePage.displayName)
+                  .map((f: any) => f);
+
+                if (initialPageFilters.length > 0) {
+                  setFilterPage({ page: activePage.name, filter: initialPageFilters });
+                }
+              }
+            }
+
+            report.on("pageChanged", async (event: any) => {
+              const currentPageName = event.detail.newPage;
+
+              const pageFilters = filter
+                .filter((f: any) => f.target.pageName === currentPageName.displayName)
+                .map((f: any) => f);
+
+              if (pageFilters.length > 0 && currentPageName.name != filterPage.page) {
+                setFilterPage({ page: currentPageName.name, filter: pageFilters });
+              }
+            });
+          } catch (error) {
+            console.error("Erro ao aplicar filtros:", error);
+          }
+        }
+      });
     }
-  }, [token, reportId, filters, isMobile]);
+  }, [token, reportId, filters, isMobile, filterPage]);
 
   return <Container ref={embedContainer} />;
 };
