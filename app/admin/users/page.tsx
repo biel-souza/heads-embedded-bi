@@ -42,7 +42,7 @@ const Users = () => {
   const getUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.get("/users", { params: {} });
+      const { data } = await api.get("/users", { params: { take: limit, skip: page * limit } });
 
       if (data.data) {
         setUsers(data.data);
@@ -52,7 +52,7 @@ const Users = () => {
       toast.error("Erro ao buscar usuários!");
     }
     setLoading(false);
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     getUsers();

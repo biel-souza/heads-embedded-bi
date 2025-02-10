@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as powerbi from "powerbi-client";
 import { Container } from "./style";
 
@@ -11,7 +11,23 @@ interface Props {
 }
 
 const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
+  const mobileWidth = 900;
   const embedContainer = useRef(null);
+  const [isMobile, setIsMobile] = useState<boolean>(
+    () => typeof window != "undefined" && window.innerWidth < mobileWidth
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < mobileWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (process.env.NEXT_PUBLIC_BI_EMBEDDED_URL && token && reportId && embedContainer.current) {
@@ -45,7 +61,8 @@ const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
         tokenType: powerbi.models.TokenType.Aad,
         settings: {
           filterPaneEnabled: false,
-          navContentPaneEnabled: true,
+          navContentPaneEnabled: isMobile ? false : true,
+          layoutType: isMobile ? powerbi.models.LayoutType.MobileLandscape : powerbi.models.LayoutType.Custom,
         },
         filters: filter,
       };
@@ -53,7 +70,7 @@ const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
       powerbiService.reset(embedContainer.current);
       powerbiService.embed(embedContainer.current, config);
     }
-  }, [token, reportId, filters]);
+  }, [token, reportId, filters, isMobile]);
 
   return <Container ref={embedContainer} />;
 };
