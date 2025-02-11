@@ -70,6 +70,9 @@ const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
           filterPaneEnabled: false,
           navContentPaneEnabled: isMobile ? false : true,
           layoutType: isMobile ? powerbi.models.LayoutType.MobileLandscape : powerbi.models.LayoutType.Custom,
+          customLayout: {
+            displayOption: powerbi.models.DisplayOption.FitToWidth,
+          },
         },
         filters: useFilters,
         pageName: filterPage.page,
