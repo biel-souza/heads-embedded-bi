@@ -9,8 +9,11 @@ import { toast } from "react-toastify";
 import AdminContainer from "@/components/AdminContainer";
 import { HeaderTitle } from "@/components/HeaderTitle";
 import { RouteButton } from "@/components/RouteButton";
+import { SelectInput } from "@/components/SelectInput";
+import { InputText } from "@/components/InputText";
 import type { UserType } from "@/types/users.type";
 import Pagination from "@/components/Pagination";
+import "@/styles/filters.css";
 import api from "@/utils/api";
 import "@/styles/table.css";
 
@@ -21,10 +24,33 @@ const Users = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [users, setUsers] = useState<UserType[]>([]);
   const router = useRouter();
+  const [filters, setFilters] = useState({ company_id: "", name: "" });
+  const [companies, setCompanies] = useState([{ value: "", label: "Todos" }]);
 
   const handlePageChange = (cPage: number) => {
     setPage(cPage);
   };
+
+  const handleFilter = (obj: object) => {
+    setFilters({ ...filters, ...obj });
+  };
+
+  const getCompanies = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get("/companies");
+
+      const compa = data.data.map((comp: any) => ({
+        value: comp.id,
+        label: comp.description,
+      }));
+
+      setCompanies([...companies, ...compa]);
+    } catch (err) {
+      toast.error("Erro ao buscar empresas!");
+    }
+    setLoading(false);
+  }, []);
 
   const deleteUser = async (user_id: number) => {
     setLoading(true);
@@ -42,7 +68,7 @@ const Users = () => {
   const getUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.get("/users", { params: { take: limit, skip: page * limit } });
+      const { data } = await api.get("/users", { params: { take: limit, skip: page * limit, where: filters } });
 
       if (data.data) {
         setUsers(data.data);
@@ -52,7 +78,11 @@ const Users = () => {
       toast.error("Erro ao buscar usuários!");
     }
     setLoading(false);
-  }, [page]);
+  }, [page, filters]);
+
+  useEffect(() => {
+    getCompanies();
+  }, [getCompanies]);
 
   useEffect(() => {
     getUsers();
@@ -63,6 +93,27 @@ const Users = () => {
       <HeaderTitle title="Usuários">
         <RouteButton href="/admin/users/register" title="CADASTRAR" Icon={FaPlus} />
       </HeaderTitle>
+      <div className="filters">
+        <div className="filter">
+          <InputText
+            type="text"
+            name="name"
+            placeholder="Nome"
+            value={filters.name}
+            label="Nome"
+            onChange={(e) => handleFilter({ name: e.target.value as string })}
+          />
+        </div>
+        <div className="filter">
+          <SelectInput
+            name="name"
+            label="Empresa"
+            value={filters.company_id}
+            values={companies}
+            onChange={(e) => handleFilter({ company_id: e.target.value as string })}
+          />
+        </div>
+      </div>
       <div className="table-container">
         <table>
           <thead>
