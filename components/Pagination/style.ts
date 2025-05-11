@@ -8,3 +8,9 @@ export const PaginationContainer = styled.div`
   font-family: Arial, sans-serif;
   margin-top: 20px;
 `;
+
+export const TotalText = styled.span`
+  font-size: 14px;
+  position: absolute;
+  right: 25px;
+`;

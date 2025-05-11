@@ -12,7 +12,9 @@ import api from "@/utils/api";
 const Dashboard = () => {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(false);
-  const [reportId, setReportId] = useState("");
+  const [reportId, setReportId] = useState(
+    session?.user?.panels?.length == 1 ? session?.user?.panels[0]?.report_id : ""
+  );
   const [token, setToken] = useState("");
   const [filter, setFilter] = useState("");
 
@@ -41,7 +43,7 @@ const Dashboard = () => {
   }, [status]);
 
   useEffect(() => {
-    if (reportId) {
+    if (reportId || session?.user.panels?.length == 1) {
       const panel = session?.user?.panels?.filter((panel) => panel?.report_id == reportId)[0];
 
       if (panel?.filter) {

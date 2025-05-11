@@ -11,6 +11,7 @@ import { HeaderTitle } from "@/components/HeaderTitle";
 import { RouteButton } from "@/components/RouteButton";
 import { SelectInput } from "@/components/SelectInput";
 import { InputText } from "@/components/InputText";
+import { DateInput } from "@/components/DateInput";
 import type { UserType } from "@/types/users.type";
 import Pagination from "@/components/Pagination";
 import "@/styles/filters.css";
@@ -24,7 +25,7 @@ const Users = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [users, setUsers] = useState<UserType[]>([]);
   const router = useRouter();
-  const [filters, setFilters] = useState({ company_id: "", name: "" });
+  const [filters, setFilters] = useState({ company_id: "", name: "", last_login_at: "", active: "" });
   const [companies, setCompanies] = useState([{ value: "", label: "Todos" }]);
 
   const handlePageChange = (cPage: number) => {
@@ -113,6 +114,27 @@ const Users = () => {
             onChange={(e) => handleFilter({ company_id: e.target.value as string })}
           />
         </div>
+        <div className="filter">
+          <DateInput
+            name="last_login_at"
+            label="Último Login"
+            value={filters.last_login_at || ""}
+            onChange={(e) => handleFilter({ last_login_at: e.target.value })}
+          />
+        </div>
+        <div className="filter">
+          <SelectInput
+            name="active"
+            label="Ativo"
+            value={filters.active}
+            values={[
+              { value: "", label: "Todos" },
+              { value: "true", label: "Sim" },
+              { value: "false", label: "Não" },
+            ]}
+            onChange={(e) => handleFilter({ active: e.target.value })}
+          />
+        </div>
       </div>
       <div className="table-container">
         <table>
@@ -123,6 +145,7 @@ const Users = () => {
               <th>Usuário</th>
               <th>Empresa</th>
               <th>Ativo</th>
+              <th>Último login</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -134,6 +157,7 @@ const Users = () => {
                 <td>{user.user}</td>
                 <td>{user.userCompanies?.[0]?.company.description}</td>
                 <td>{user.active ? "Sim" : "Não"}</td>
+                <td>{user.last_login_at ? new Date(user.last_login_at).toLocaleDateString() : "-"}</td>
                 <td>
                   <div className="buttons-table">
                     <button onClick={() => router.push(`/admin/users/edit?id=${user.id}`)}>

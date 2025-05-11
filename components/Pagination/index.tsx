@@ -1,6 +1,6 @@
 import { Pagination as PaginationMui } from "@mui/material";
 
-import { PaginationContainer } from "./style";
+import { PaginationContainer, TotalText } from "./style";
 
 interface Props {
   page: number;
@@ -15,6 +15,7 @@ const Pagination = ({ page, itemsPerPage, onPageChange, total }: Props) => {
   return (
     <PaginationContainer>
       <PaginationMui count={pages} size="small" page={page + 1} onChange={(e, p) => onPageChange(p - 1)} />
+      <TotalText> Total: {total} </TotalText>
     </PaginationContainer>
   );
 };

@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Formik, FormikProps } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Formik, FormikProps } from "formik";
 import { Modal } from "@/components/Modal";
+import { MdDelete } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
@@ -22,7 +23,6 @@ import { BackButton } from "@/components/BackButton";
 import { InputText } from "@/components/InputText";
 import api from "@/utils/api";
 import "@/styles/table.css";
-import { MdDelete } from "react-icons/md";
 
 interface ValuesType {
   user: string;
