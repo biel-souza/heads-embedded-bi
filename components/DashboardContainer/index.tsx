@@ -1,5 +1,5 @@
-import { signOut, useSession } from "next-auth/react";
 import { SelectChangeEvent } from "@mui/material";
+import { signOut } from "next-auth/react";
 import { ReactNode } from "react";
 
 import { Header, SelectContainer, Title } from "./style";
