@@ -126,7 +126,7 @@ const PowerBIEmbed = ({ token, reportId, filters, isMobileModeActive }: Props) =
         }
       });
     }
-  }, [token, reportId, filters, isMobile, filterPage]);
+  }, [token, reportId, filters, isMobile, filterPage, isMobileModeActive]);
 
   return <Container ref={embedContainer} />;
 };
