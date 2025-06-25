@@ -19,9 +19,6 @@ const Dashboard = () => {
   const [filter, setFilter] = useState("");
   const [mobileMode] = useState(session?.user.company.mobile_mode ?? false);
 
-  console.log("is mobile mode active:");
-  console.log(mobileMode);
-
   const getToken = async () => {
     setLoading(true);
     try {

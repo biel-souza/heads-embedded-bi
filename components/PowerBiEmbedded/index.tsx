@@ -61,9 +61,13 @@ const PowerBIEmbed = ({ token, reportId, filters, isMobileModeActive }: Props) =
         useFilters = filterPage.filter;
       }
 
+      console.log("moileModeActive", isMobileModeActive);
+
       const mobileLayout = isMobileModeActive
         ? powerbi.models.LayoutType.MobilePortrait
         : powerbi.models.LayoutType.MobileLandscape;
+
+      console.log(mobileLayout);
 
       const config: powerbi.service.IComponentEmbedConfiguration = {
         type: "report",
