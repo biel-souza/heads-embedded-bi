@@ -8,9 +8,10 @@ interface Props {
   token: string;
   reportId: string;
   filters?: string;
+  isMobileModeActive: boolean;
 }
 
-const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
+const PowerBIEmbed = ({ token, reportId, filters, isMobileModeActive }: Props) => {
   const mobileWidth = 900;
   const embedContainer = useRef(null);
   const [filterPage, setFilterPage] = useState({ page: "", filter: [] });
@@ -60,6 +61,10 @@ const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
         useFilters = filterPage.filter;
       }
 
+      const mobileLayout = isMobileModeActive
+        ? powerbi.models.LayoutType.MobilePortrait
+        : powerbi.models.LayoutType.MobileLandscape;
+
       const config: powerbi.service.IComponentEmbedConfiguration = {
         type: "report",
         id: reportId,
@@ -69,7 +74,7 @@ const PowerBIEmbed = ({ token, reportId, filters }: Props) => {
         settings: {
           filterPaneEnabled: false,
           navContentPaneEnabled: isMobile ? false : true,
-          layoutType: isMobile ? powerbi.models.LayoutType.MobileLandscape : powerbi.models.LayoutType.Custom,
+          layoutType: isMobile ? mobileLayout : powerbi.models.LayoutType.Custom,
           customLayout: {
             displayOption: powerbi.models.DisplayOption.FitToWidth,
           },

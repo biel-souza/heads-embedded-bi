@@ -20,7 +20,14 @@ declare module "next-auth" {
     name: string;
     user: string;
     type: string;
-    company: { id: number; description: string; pbi_client_id: string; pbi_password: string; pbi_user: string };
+    company: {
+      id: number;
+      description: string;
+      pbi_client_id: string;
+      pbi_password: string;
+      pbi_user: string;
+      mobile_mode: boolean;
+    };
     panels: { id: number; description: string; report_id: string; filter: string }[];
   }
 }

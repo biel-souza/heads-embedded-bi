@@ -259,6 +259,7 @@ const EditUser = () => {
                 values={[
                   { label: "Normal", value: "default" },
                   { label: "Admin", value: "admin" },
+                  { label: "Gestor", value: "manager" },
                 ]}
               />
             </div>

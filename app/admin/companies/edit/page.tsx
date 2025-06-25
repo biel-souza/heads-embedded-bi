@@ -21,6 +21,7 @@ interface ValuesType {
   pbi_password: string;
   pbi_client_id: string;
   active: string;
+  mobile_mode: string;
 }
 
 const EditCompanies = () => {
@@ -36,6 +37,7 @@ const EditCompanies = () => {
     active: Yup.string().required("Ativo é obrigatório"),
     pbi_password: Yup.string().required("Senha é obrigatório"),
     pbi_client_id: Yup.string().required("Client ID é obrigatório"),
+    mobile_mode: Yup.string().required("Modo Mobile é obrigatório"),
   });
 
   const handleSubmit = async (values: ValuesType) => {
@@ -75,7 +77,14 @@ const EditCompanies = () => {
       </HeaderTitle>
       <Formik
         innerRef={formikRef}
-        initialValues={{ description: "", pbi_user: "", pbi_password: "", pbi_client_id: "", active: "" }}
+        initialValues={{
+          description: "",
+          pbi_user: "",
+          pbi_password: "",
+          pbi_client_id: "",
+          active: "",
+          mobile_mode: "",
+        }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
           handleSubmit(values);
@@ -134,6 +143,19 @@ const EditCompanies = () => {
                 error={errors.active}
                 label="Ativo"
                 value={values.active}
+                values={[
+                  { label: "Sim", value: true },
+                  { label: "Não", value: false },
+                ]}
+              />
+            </div>
+            <div className="container-input">
+              <RadioInput
+                name="mobile_mode"
+                onChange={handleChange}
+                error={errors.mobile_mode}
+                label="Modo Mobile"
+                value={values.mobile_mode}
                 values={[
                   { label: "Sim", value: true },
                   { label: "Não", value: false },

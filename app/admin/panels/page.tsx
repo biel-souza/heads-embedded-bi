@@ -59,7 +59,7 @@ const Panels = () => {
   const getData = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.get("/panels", { params: { skip: page, take: limit } });
+      const { data } = await api.get("/panels", { params: { skip: page * limit, take: limit } });
       const companies = await getCompanies();
 
       if (data.data) {

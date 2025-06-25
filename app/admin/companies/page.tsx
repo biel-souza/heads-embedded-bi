@@ -42,7 +42,7 @@ const Companies = () => {
   const getData = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.get("/companies", { params: { skip: page, take: limit } });
+      const { data } = await api.get("/companies", { params: { skip: page * limit, take: limit } });
 
       if (data?.data) {
         setCompanies(

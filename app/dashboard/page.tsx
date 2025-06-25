@@ -17,6 +17,7 @@ const Dashboard = () => {
   );
   const [token, setToken] = useState("");
   const [filter, setFilter] = useState("");
+  const [mobileMode] = useState(session?.user.company.mobile_mode ?? false);
 
   const getToken = async () => {
     setLoading(true);
@@ -33,6 +34,7 @@ const Dashboard = () => {
         setToken(data);
       }
     } catch (error) {
+      console.log(error);
       toast.error("Erro ao buscar token");
     }
     setLoading(false);
@@ -61,7 +63,7 @@ const Dashboard = () => {
         values: session?.user.panels.map((panel) => ({ value: panel.report_id, label: panel.description })),
       }}
     >
-      {token && <PowerBIEmbed reportId={reportId} token={token} filters={filter} />}
+      {token && <PowerBIEmbed reportId={reportId} token={token} filters={filter} isMobileModeActive={mobileMode} />}
     </DashboardContainer>
   );
 };
