@@ -17,7 +17,7 @@ const Dashboard = () => {
   );
   const [token, setToken] = useState("");
   const [filter, setFilter] = useState("");
-  const [mobileMode] = useState(session?.user.company.mobile_mode ?? false);
+  const [mobileMode, setMobileMode] = useState(session?.user.company.mobile_mode ?? false);
 
   const getToken = async () => {
     setLoading(true);
@@ -53,6 +53,10 @@ const Dashboard = () => {
       }
     }
   }, [reportId, session?.user?.panels]);
+
+  useEffect(() => {
+    setMobileMode(session?.user.company?.mobile_mode ?? false);
+  }, [session?.user.company.mobile_mode]);
 
   return (
     <DashboardContainer
