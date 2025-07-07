@@ -16,6 +16,8 @@ interface Props {
 }
 
 export const AdminMenu = ({ open, toggleDrawer, drawerwidth }: Props) => {
+  const { data: session, status } = useSession();
+
   return (
     <Box sx={{ display: "flex" }}>
       <AppBarStyled
@@ -88,16 +90,20 @@ export const AdminMenu = ({ open, toggleDrawer, drawerwidth }: Props) => {
           </IconButton>
         </Box>
         <List>
-          <Option href="/admin/companies">
-            <Wrapper>
-              <IoBusinessSharp size={20} /> <p>EMPRESAS</p>
-            </Wrapper>
-          </Option>
-          <Option href="/admin/panels">
-            <Wrapper>
-              <FaRegWindowRestore size={20} /> <p>PAINÉIS</p>
-            </Wrapper>
-          </Option>
+          {session?.user?.type == "admin" ? (
+            <Option href="/admin/companies">
+              <Wrapper>
+                <IoBusinessSharp size={20} /> <p>EMPRESAS</p>
+              </Wrapper>
+            </Option>
+          ) : null}
+          {session?.user?.type == "admin" ? (
+            <Option href="/admin/panels">
+              <Wrapper>
+                <FaRegWindowRestore size={20} /> <p>PAINÉIS</p>
+              </Wrapper>
+            </Option>
+          ) : null}
           <Option href="/admin/users">
             <Wrapper>
               <FaUserFriends size={22} /> <p>USUÁRIOS</p>

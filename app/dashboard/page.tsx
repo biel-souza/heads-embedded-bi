@@ -23,13 +23,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       if (!token && status === "authenticated" && session?.user.company) {
-        const body = {
-          client_id: session?.user.company.pbi_client_id as string,
-          password: session?.user.company.pbi_password as string,
-          username: session?.user.company.pbi_user as string,
-        };
-
-        const { data } = await api.post("/login/tokenbi", body);
+        const { data } = await api.get("/login/tokenbi");
 
         setToken(data);
       }

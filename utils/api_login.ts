@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// API específica para login - sem token de autorização
 const api_login = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_HEADS_URL,
   headers: {

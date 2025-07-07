@@ -1,5 +1,4 @@
 import Credentials from "next-auth/providers/credentials";
-import jsonwebtoken from "jsonwebtoken";
 import NextAuth from "next-auth";
 
 import type { User } from "@/types/nextAuth.type";
@@ -13,6 +12,8 @@ declare module "next-auth" {
 
   interface JWT {
     type?: string;
+    jwt?: string;
+    user?: User;
   }
 
   interface User {
@@ -20,12 +21,10 @@ declare module "next-auth" {
     name: string;
     user: string;
     type: string;
+    token?: string;
     company: {
       id: number;
       description: string;
-      pbi_client_id: string;
-      pbi_password: string;
-      pbi_user: string;
       mobile_mode: boolean;
     };
     panels: { id: number; description: string; report_id: string; filter: string }[];
@@ -61,18 +60,16 @@ const handler = NextAuth({
 
           const { data: userLogin } = await api_login.post("/login", { user, password });
 
-          if (!userLogin) {
+          if (!userLogin || !userLogin.user) {
             return null;
           }
 
-          return {
-            id: userLogin.id,
-            name: userLogin.name,
-            type: userLogin.type,
-            user: userLogin.user,
-            company: userLogin.company,
-            panels: userLogin.panels,
+          const userData = {
+            ...userLogin.user,
+            token: userLogin.token,
           };
+
+          return userData;
         } catch (error) {
           return null;
         }
@@ -118,15 +115,19 @@ const handler = NextAuth({
           company: user.company,
           name: user.name,
         };
+        token.jwt = user.token;
       }
 
       return token;
     },
     session({ session, token }) {
-      session.user = token.user as User;
+      if (token.user) {
+        session.user = token.user as User;
+      }
 
-      const jwt = jsonwebtoken.sign(session.user, process.env.NEXTAUTH_SECRET as string);
-      session.jwt = jwt;
+      if (token.jwt) {
+        session.jwt = token.jwt as string;
+      }
 
       return session;
     },

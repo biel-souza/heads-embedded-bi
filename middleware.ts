@@ -8,7 +8,9 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  if (pathname == "/" && token?.user?.type === "admin") {
+  const adminUsers = ["admin", "manager"];
+
+  if (pathname == "/" && adminUsers.includes(token?.user?.type as string)) {
     const url = req.nextUrl.clone();
     url.pathname = "/admin";
 
@@ -22,7 +24,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (pathname.startsWith("/login") && token?.user?.type === "admin") {
+  if (pathname.startsWith("/login") && adminUsers.includes(token?.user?.type as string)) {
     const url = req.nextUrl.clone();
     url.pathname = "/admin";
 
@@ -43,14 +45,14 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (pathname.includes("/admin") && token?.user?.type != "admin") {
+  if (pathname.includes("/admin") && !adminUsers.includes(token?.user?.type as string)) {
     const url = req.nextUrl.clone();
     url.pathname = "/dashboard";
 
     return NextResponse.redirect(url);
   }
 
-  if (!pathname.includes("/admin") && !pathname.includes("/auth") && token?.user?.type == "admin") {
+  if (!pathname.includes("/admin") && !pathname.includes("/auth") && adminUsers.includes(token?.user?.type as string)) {
     const url = req.nextUrl.clone();
     url.pathname = "/admin";
 
