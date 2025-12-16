@@ -60,18 +60,9 @@ const PowerBIEmbed = ({
           matches.push(match[0]);
         }
 
-        filter = matches
-          .map((json) => {
-            try {
-              // Parse as JSON instead of using eval to avoid executing arbitrary code
-              return JSON.parse(json);
-            } catch (e) {
-              // If parsing fails, ignore the entry and warn (keeps behaviour safe)
-              console.warn("PowerBIEmbed: invalid filter JSON", json, e);
-              return null;
-            }
-          })
-          .filter(Boolean);
+        filter = matches.map((json) => {
+          return eval("(" + json + ")");
+        });
       }
 
       let useFilters = filter
