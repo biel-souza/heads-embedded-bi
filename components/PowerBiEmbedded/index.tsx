@@ -11,7 +11,12 @@ interface Props {
   isMobileModeActive: boolean;
 }
 
-const PowerBIEmbed = ({ token, reportId, filters, isMobileModeActive }: Props) => {
+const PowerBIEmbed = ({
+  token,
+  reportId,
+  filters,
+  isMobileModeActive,
+}: Props) => {
   const mobileWidth = 900;
   const embedContainer = useRef(null);
   const [filterPage, setFilterPage] = useState({ page: "", filter: [] });
@@ -32,7 +37,12 @@ const PowerBIEmbed = ({ token, reportId, filters, isMobileModeActive }: Props) =
   }, []);
 
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_BI_EMBEDDED_URL && token && reportId && embedContainer.current) {
+    if (
+      process.env.NEXT_PUBLIC_BI_EMBEDDED_URL &&
+      token &&
+      reportId &&
+      embedContainer.current
+    ) {
       const powerbiService = new powerbi.service.Service(
         powerbi.factories.hpmFactory,
         powerbi.factories.wpmpFactory,
@@ -50,12 +60,23 @@ const PowerBIEmbed = ({ token, reportId, filters, isMobileModeActive }: Props) =
           matches.push(match[0]);
         }
 
-        filter = matches.map((json) => {
-          return eval("(" + json + ")");
-        });
+        filter = matches
+          .map((json) => {
+            try {
+              // Parse as JSON instead of using eval to avoid executing arbitrary code
+              return JSON.parse(json);
+            } catch (e) {
+              // If parsing fails, ignore the entry and warn (keeps behaviour safe)
+              console.warn("PowerBIEmbed: invalid filter JSON", json, e);
+              return null;
+            }
+          })
+          .filter(Boolean);
       }
 
-      let useFilters = filter.filter((f: any) => !f.target.pageName).map((f: any) => f);
+      let useFilters = filter
+        .filter((f: any) => !f.target.pageName)
+        .map((f: any) => f);
 
       if (filterPage.filter.length) {
         useFilters = filterPage.filter;
@@ -78,7 +99,9 @@ const PowerBIEmbed = ({ token, reportId, filters, isMobileModeActive }: Props) =
         settings: {
           filterPaneEnabled: false,
           navContentPaneEnabled: isMobile ? false : true,
-          layoutType: isMobile ? mobileLayout : powerbi.models.LayoutType.Custom,
+          layoutType: isMobile
+            ? mobileLayout
+            : powerbi.models.LayoutType.Custom,
           customLayout: {
             displayOption: powerbi.models.DisplayOption.FitToWidth,
           },
@@ -88,7 +111,10 @@ const PowerBIEmbed = ({ token, reportId, filters, isMobileModeActive }: Props) =
       };
 
       powerbiService.reset(embedContainer.current);
-      const report = powerbiService.embed(embedContainer.current, config) as powerbi.Report;
+      const report = powerbiService.embed(
+        embedContainer.current,
+        config
+      ) as powerbi.Report;
 
       report.on("loaded", async () => {
         if (filter.length) {
@@ -96,15 +122,21 @@ const PowerBIEmbed = ({ token, reportId, filters, isMobileModeActive }: Props) =
             const pages = await report.getPages();
 
             if (pages.length) {
-              const activePage = pages.find((page) => page.isActive) || pages[0];
+              const activePage =
+                pages.find((page) => page.isActive) || pages[0];
 
               if (activePage.name != filterPage.page) {
                 const initialPageFilters = filter
-                  .filter((f: any) => f.target.pageName === activePage.displayName)
+                  .filter(
+                    (f: any) => f.target.pageName === activePage.displayName
+                  )
                   .map((f: any) => f);
 
                 if (initialPageFilters.length > 0) {
-                  setFilterPage({ page: activePage.name, filter: initialPageFilters });
+                  setFilterPage({
+                    page: activePage.name,
+                    filter: initialPageFilters,
+                  });
                 }
               }
             }
@@ -113,11 +145,19 @@ const PowerBIEmbed = ({ token, reportId, filters, isMobileModeActive }: Props) =
               const currentPageName = event.detail.newPage;
 
               const pageFilters = filter
-                .filter((f: any) => f.target.pageName === currentPageName.displayName)
+                .filter(
+                  (f: any) => f.target.pageName === currentPageName.displayName
+                )
                 .map((f: any) => f);
 
-              if (pageFilters.length > 0 && currentPageName.name != filterPage.page) {
-                setFilterPage({ page: currentPageName.name, filter: pageFilters });
+              if (
+                pageFilters.length > 0 &&
+                currentPageName.name != filterPage.page
+              ) {
+                setFilterPage({
+                  page: currentPageName.name,
+                  filter: pageFilters,
+                });
               }
             });
           } catch (error) {
