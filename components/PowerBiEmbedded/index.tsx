@@ -66,7 +66,7 @@ const PowerBIEmbed = ({
       }
 
       let useFilters = filter
-        .filter((f: any) => !f.target.pageName)
+        .filter((f: any) => !f.pageName)
         .map((f: any) => f);
 
       if (filterPage.filter.length) {
@@ -118,9 +118,7 @@ const PowerBIEmbed = ({
 
               if (activePage.name != filterPage.page) {
                 const initialPageFilters = filter
-                  .filter(
-                    (f: any) => f.target.pageName === activePage.displayName
-                  )
+                  .filter((f: any) => f.pageName === activePage.displayName)
                   .map((f: any) => f);
 
                 if (initialPageFilters.length > 0) {
@@ -136,9 +134,7 @@ const PowerBIEmbed = ({
               const currentPageName = event.detail.newPage;
 
               const pageFilters = filter
-                .filter(
-                  (f: any) => f.target.pageName === currentPageName.displayName
-                )
+                .filter((f: any) => f.pageName === currentPageName.displayName)
                 .map((f: any) => f);
 
               if (
